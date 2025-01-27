@@ -8,6 +8,7 @@ import MovieResultCount from './components/MovieResultCount';
 import Box from './components/Box';
 import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
+import MovieDetails from './components/MovieDetails';
 
 const KEY = process.env.REACT_APP_OMDB_API_KEY;
 
@@ -17,6 +18,7 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [query, setQuery] = useState('');
+  const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -61,12 +63,30 @@ export default function App() {
       <Main>
         <Box>
           {isLoading && <Loader />}
-          {!isLoading && !error && <MovieList movies={movies} />}
+          {!isLoading && !error && (
+            <MovieList
+              movies={movies}
+              onSelectMovie={(id) =>
+                setSelectedId(id === selectedId ? null : id)
+              }
+            />
+          )}
           {error && <ErrorMessage message={error} />}
         </Box>
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMovieList watched={watched} />
+          <>
+            {selectedId ? (
+              <MovieDetails
+                selectedId={selectedId}
+                onCloseMovie={() => setSelectedId(null)}
+              />
+            ) : (
+              <>
+                <WatchedSummary watched={watched} />
+                <WatchedMovieList watched={watched} />
+              </>
+            )}
+          </>
         </Box>
       </Main>
     </>
