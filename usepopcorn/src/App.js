@@ -9,17 +9,17 @@ import Box from './components/Box';
 import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
 
-const KEY = process.env.REACT_APP_API_KEY;
+const KEY = process.env.REACT_APP_OMDB_API_KEY;
 
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
 
   useEffect(() => {
-    fetch(`http://img.omdbapi.com/?apikey=${KEY}&s=interstellar`)
+    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
       .then((res) => res.json())
-      .then((data) => console.log(data));
-  }, [movies]);
+      .then((data) => setMovies(data.Search));
+  }, []);
 
   return (
     <>
