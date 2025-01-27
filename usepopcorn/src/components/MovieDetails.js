@@ -3,12 +3,26 @@ import StarRating from './StarRating';
 import Loader from './Loader';
 const KEY = process.env.REACT_APP_OMDB_API_KEY;
 
-function MovieDetails({ selectedId, onCloseMovie }) {
-  const [movie, setMovie] = useState({});
+function MovieDetails({
+  watched,
+  selectedId,
+  onCloseMovie,
+  onAddWatched,
+  onDeleteWatched,
+}) {
+  const watchedMovie = watched.find((movie) => movie.imdbID === selectedId);
+  const isWatched = watched.some((movie) => movie.imdbID === selectedId);
+
+  const [movie, setMovie] = useState(watchedMovie ?? {});
   const [isLoading, setIsLoading] = useState(false);
+  const [userRating, setUserRating] = useState(watchedMovie?.userRating || 0);
 
   useEffect(() => {
     async function getMovieDetails() {
+      if (isWatched) {
+        return;
+      }
+
       setIsLoading(true);
       const res = await fetch(
         `https://www.omdbapi.com/?i=${selectedId}&apikey=${KEY}`
@@ -18,7 +32,15 @@ function MovieDetails({ selectedId, onCloseMovie }) {
       setIsLoading(false);
     }
     getMovieDetails();
-  }, [selectedId]);
+  }, [selectedId, watched]);
+
+  function handleClick() {
+    if (isWatched) {
+      onDeleteWatched(selectedId);
+    } else {
+      onAddWatched({ ...movie, userRating });
+    }
+  }
 
   return (
     <div className="details">
@@ -47,7 +69,17 @@ function MovieDetails({ selectedId, onCloseMovie }) {
 
           <section>
             <div className="rating">
-              <StarRating size={24} maxRating={10} />
+              <StarRating
+                size={24}
+                maxRating={10}
+                defaultRating={userRating}
+                onSetRating={setUserRating}
+              />
+              {userRating > 0 && (
+                <button className="btn-add" onClick={handleClick}>
+                  {isWatched ? 'Remove from list' : 'Add to list'}
+                </button>
+              )}
             </div>
             <p>
               <em>{movie.Plot}</em>
