@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// import './index.css';
-import App from './App';
+import './index.css';
+import 'react-app-polyfill/ie11';
+import 'react-app-polyfill/stable';
 
-import StarRating from './components/StarRating';
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <StarRating maxRating={10} />
-    {/* <App /> */}
+    <App />
   </React.StrictMode>
 );

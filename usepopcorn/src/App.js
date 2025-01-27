@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Main from './components/Main';
 import NavBar from './components/NavBar';
 import MovieList from './components/MovieList';
@@ -9,9 +9,17 @@ import Box from './components/Box';
 import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
 
+const KEY = process.env.REACT_APP_API_KEY;
+
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
   const [watched, setWatched] = useState(tempWatchedData);
+
+  useEffect(() => {
+    fetch(`http://img.omdbapi.com/?apikey=${KEY}&s=interstellar`)
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, [movies]);
 
   return (
     <>
