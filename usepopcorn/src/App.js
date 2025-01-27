@@ -9,6 +9,7 @@ import Box from './components/Box';
 import WatchedSummary from './components/WatchedSummary';
 import WatchedMovieList from './components/WatchedMovieList';
 import MovieDetails from './components/MovieDetails';
+import Loader from './components/Loader';
 
 const KEY = process.env.REACT_APP_OMDB_API_KEY;
 
@@ -91,10 +92,6 @@ export default function App() {
       </Main>
     </>
   );
-}
-
-function Loader() {
-  return <p className="loader">Loading...</p>;
 }
 
 function ErrorMessage({ message }) {
