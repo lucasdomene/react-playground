@@ -4,11 +4,7 @@ export default function MovieList({ movies, onSelectMovie, onCloseMovie }) {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (
-        <Movie
-          key={movie.imdbID}
-          movie={movie}
-          onSelectMovie={onSelectMovie}
-        />
+        <Movie key={movie.imdbID} movie={movie} onSelectMovie={onSelectMovie} />
       ))}
     </ul>
   );

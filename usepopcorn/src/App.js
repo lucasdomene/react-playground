@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import Main from './components/Main';
-import NavBar from './components/NavBar';
-import MovieList from './components/MovieList';
-import Search from './components/Search';
-import MovieResultCount from './components/MovieResultCount';
+import Main from './components/common/Main';
 
-import Box from './components/Box';
-import WatchedSummary from './components/WatchedSummary';
-import WatchedMovieList from './components/WatchedMovieList';
-import MovieDetails from './components/MovieDetails';
-import Loader from './components/Loader';
+import MovieList from './components/movie/MovieList';
+import Search from './components/common/Search';
+import MovieResultCount from './components/movie/MovieResultCount';
+
+import Box from './components/common/Box';
+import WatchedSummary from './components/movie/WatchedSummary';
+import WatchedMovieList from './components/movie/WatchedMovieList';
+import MovieDetails from './components/movie/MovieDetails/MovieDetails';
+import Loader from './components/common/Loader';
+import NavBar from './components/common/NavBar';
 
 const KEY = process.env.REACT_APP_OMDB_API_KEY;
 
@@ -22,12 +23,15 @@ export default function App() {
   const [selectedId, setSelectedId] = useState(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchMovies = async () => {
       try {
         setIsLoading(true);
         setError('');
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
+          { signal: controller.signal }
         );
 
         if (!res.ok) {
@@ -39,8 +43,11 @@ export default function App() {
         if (data.Response === 'False') throw new Error('Movie not found');
 
         setMovies(data.Search);
+        setError('');
       } catch (err) {
-        setError(err.message);
+        if (err.name !== 'AbortError') {
+          setError(err.message);
+        }
       } finally {
         setIsLoading(false);
       }
@@ -53,6 +60,8 @@ export default function App() {
     }
 
     fetchMovies();
+
+    return () => controller.abort();
   }, [query]);
 
   function handleAddWatched(movie) {
