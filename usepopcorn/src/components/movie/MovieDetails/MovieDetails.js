@@ -22,6 +22,17 @@ function MovieDetails({
   );
 
   useEffect(() => {
+    const closeSelectedMovie = (e) => {
+      if (e.code === 'Escape') onCloseMovie();
+      console.log('closing');
+    };
+
+    document.addEventListener('keydown', closeSelectedMovie);
+
+    return () => document.removeEventListener('keydown', closeSelectedMovie);
+  }, []);
+
+  useEffect(() => {
     if (!movie.Title) return;
 
     document.title = `usePopcorn | ${movie.Title}`;
